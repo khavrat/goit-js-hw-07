@@ -8,7 +8,6 @@ function createGalleryMarkup(galleryItems) {
   return galleryItems
     .map(({ preview, original, description }) => {
       return `
-    <div class="gallery__item">
   <div class="gallery__item">
   <a class="gallery__link" href="${original}">
     <img
@@ -23,31 +22,29 @@ function createGalleryMarkup(galleryItems) {
     .join("");
 }
 galleryContainerRef.insertAdjacentHTML("beforeend", galleryMarkup);
-
 galleryContainerRef.addEventListener("click", onImgInModal);
 
 function onImgInModal(event) {
   event.preventDefault();
-
-  const imgInModal = event.target.dataset.source;
-
-  if (event.target.nodeName !== "IMG") {
+  const isImgEl = event.target.classList.contains("gallery__image");
+  if (!isImgEl) {
     return;
   }
-  const instance = basicLightbox.create(`
-    <img src='${imgInModal}' width="800" height="600">
-`);
-  instance.show();
+  const imgInModal = event.target.dataset.source;
 
-  galleryContainerRef.addEventListener(
-    "keydown",
-    (event) => {
-      if (event.code === "Escape") {
-        instance.close();
-      }
-    },
-    { once: true }
+  const instance = basicLightbox.create(
+    `
+      <img src='${imgInModal}' width="800" height="600">
+  `
   );
+  instance.show();
+  
+  document.addEventListener("keydown", handlePressEscKey);
+  function handlePressEscKey(event) {
+    if (event.code !== "Escape") return;
+    if (event.code === "Escape") instance.close();
+    document.removeEventListener("keydown", handlePressEscKey);
+  }
 }
 
 console.log(galleryItems);
