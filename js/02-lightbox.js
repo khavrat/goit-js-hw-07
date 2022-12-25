@@ -15,22 +15,10 @@ function createGalleryMarkup(galleryItems) {
 }
 galleryContainerRef.insertAdjacentHTML("beforeend", galleryMarkup);
 
-galleryContainerRef.addEventListener("click", onPictureInModal);
-
-function onPictureInModal(event) {
-  event.preventDefault();
-
-  if (event.target.nodeName !== "IMG") {
-    return;
-  } else {
-    let lightbox = new SimpleLightbox(".gallery a", {
+    new SimpleLightbox(".gallery a", {
       fileExt: false,
       alertError: false,
       captionsData: "alt",
       captionDelay: 250,
     });
-    return lightbox;
-  }
-}
-
 console.log(galleryItems);
